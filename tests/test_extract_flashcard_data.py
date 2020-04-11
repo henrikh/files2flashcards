@@ -1,5 +1,6 @@
 import unittest
 import files2flashcards as f2f
+import xml.etree.ElementTree as ET
 
 class TestExtractFlashcardData(unittest.TestCase):
 
@@ -43,6 +44,44 @@ class TestExtractFlashcardData(unittest.TestCase):
     <dt>Addition</dt>
     <dd><pre>2 + 2</pre></dd>
 </dl>"""])
+
+    def test_extract_abbreviation(self):
+        """Abbreviations should be able to be extracted"""
+
+        raw_string = """<abbr title="Bit error rate" data-context="Communication">BER</abbr>"""
+        tag = "abbr"
+        fragments = f2f.find_fragments(raw_string, tag)
+
+        data = f2f.extract_abbreviation(fragments[0])
+
+        self.assertEquals(data, {"full": "Bit error rate", "context": "Communication", "abbreviation": "BER"})
+
+        raw_string = """<abbr title="Symbol error rate" data-context="Communication">SER</abbr>"""
+        tag = "abbr"
+        fragments = f2f.find_fragments(raw_string, tag)
+
+        data = f2f.extract_abbreviation(fragments[0])
+
+        self.assertEquals(data, {"full": "Symbol error rate", "context": "Communication", "abbreviation": "SER"})
+
+    def test_inject_Anki_ID(self):
+        """Ability to inject Anki ID in elements"""
+
+        raw_string = """<abbr title="Bit error rate" data-context="Communication">BER</abbr>"""
+        tag = "abbr"
+        fragments = f2f.find_fragments(raw_string, tag)
+
+        fragment = f2f.inject_Anki_ID(fragments[0], 1234)
+
+        root = ET.fromstring(fragment)
+
+        self.assertEquals(root.attrib["data-anki-id"], "1234")
+
+        fragments = f2f.find_fragments(fragment, tag)
+
+        data = f2f.extract_abbreviation(fragments[0])
+
+        self.assertEquals(data, {"full": "Bit error rate", "context": "Communication", "abbreviation": "BER"})
 
 if __name__ == '__main__':
     unittest.main()
