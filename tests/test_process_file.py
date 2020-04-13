@@ -61,7 +61,7 @@ class TestProcessFile(unittest.TestCase):
             self.assertEqual(content, content_before)
 
     def test_process_file_call_Anki(self):
-        """Register formats and process a file"""
+        """New notes should be requested to be added"""
 
         f2f.add_format(
             tag="abbr",
@@ -83,6 +83,24 @@ class TestProcessFile(unittest.TestCase):
             content = f.read()
 
             self.assertIn("123456", content)
+
+    def test_process_file_call_Anki_existing_note(self):
+        """Existing notes should be requested to be updated"""
+
+        f2f.add_format(
+            tag="abbr",
+            class_name="e-abbr",
+            note_type="abbreviation",
+            mapping_function=f2f.extract_abbreviation)
+
+        tmp_dir = tempfile.gettempdir()
+        shutil.copyfile("tests/test_existing_note.tid", tmp_dir + "/" + "test.tid")
+
+        f2f.AnkiConnectWrapper.update_note = MagicMock()
+
+        f2f.process_file(tmp_dir + "/" + "test.tid")
+
+        f2f.AnkiConnectWrapper.update_note.assert_called_with("654321", {"full": "Bit error rate", "context": "Communication", "abbreviation":"BER"})
 
 if __name__ == '__main__':
     unittest.main()

@@ -43,13 +43,16 @@ def process_file(path):
                 if "class" in root.attrib and mapping["class_name"] in root.attrib['class']:
                     data = extract_abbreviation(root)
 
-                    note_id = AnkiConnectWrapper.add_note(mapping["note_type"], data)
+                    if 'data-anki-id' in root.attrib:
+                        AnkiConnectWrapper.update_note(root.attrib['data-anki-id'], data)
+                    else:
+                        note_id = AnkiConnectWrapper.add_note(mapping["note_type"], data)
 
-                    root = inject_Anki_ID(root, note_id)
+                        root = inject_Anki_ID(root, note_id)
 
-                    new_fragment = ET.tostring(root, encoding="unicode")
+                        new_fragment = ET.tostring(root, encoding="unicode")
 
-                    content = content.replace(fragment, new_fragment)
+                        content = content.replace(fragment, new_fragment)
 
         f.seek(0)
         f.write(content)
