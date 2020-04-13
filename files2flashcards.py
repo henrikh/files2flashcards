@@ -1,5 +1,6 @@
 import re
 import xml.etree.ElementTree as ET
+import AnkiConnectWrapper
 
 mapping_registry = []
 
@@ -23,10 +24,11 @@ def inject_Anki_ID(root, id):
 
     return root
 
-def add_format(tag, class_name, mapping_function):
+def add_format(tag, class_name, note_type, mapping_function):
     mapping_registry.append({
         "tag": tag,
         "class_name": class_name,
+        "note_type": note_type,
         "mapping_function": mapping_function
     })
 
@@ -40,7 +42,10 @@ def process_file(path):
                 root = ET.fromstring(fragment)
                 if "class" in root.attrib and mapping["class_name"] in root.attrib['class']:
                     data = extract_abbreviation(root)
-                    root = inject_Anki_ID(root, 1234)
+
+                    note_id = AnkiConnectWrapper.add_note(mapping["note_type"], data)
+
+                    root = inject_Anki_ID(root, note_id)
 
                     new_fragment = ET.tostring(root, encoding="unicode")
 
