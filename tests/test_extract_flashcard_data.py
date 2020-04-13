@@ -6,26 +6,26 @@ class TestExtractFlashcardData(unittest.TestCase):
 
     def test_fragments(self):
 
-        raw_string = """<abbr title="Bit error rate" data-context="Communication">BER</abbr>"""
+        raw_string = """<abbr title="Bit error rate" data-context="Communication" class="e-abbr">BER</abbr>"""
         tag = "abbr"
         fragments = f2f.find_fragments(raw_string, tag)
 
-        self.assertEquals(fragments, ["""<abbr title="Bit error rate" data-context="Communication">BER</abbr>"""])
+        self.assertEquals(fragments, ["""<abbr title="Bit error rate" data-context="Communication" class="e-abbr">BER</abbr>"""])
 
-        raw_string = """It is <abbr title="Bit error rate" data-context="Communication">BER</abbr>"""
+        raw_string = """It is <abbr title="Bit error rate" data-context="Communication" class="e-abbr">BER</abbr>"""
         tag = "abbr"
         fragments = f2f.find_fragments(raw_string, tag)
 
-        self.assertEquals(fragments, ["""<abbr title="Bit error rate" data-context="Communication">BER</abbr>"""])
+        self.assertEquals(fragments, ["""<abbr title="Bit error rate" data-context="Communication" class="e-abbr">BER</abbr>"""])
 
     def test_fragments_multiple(self):
         """Ensure that multiple fragments can be extracted from a single file"""
 
-        raw_string = """<abbr title="Bit error rate" data-context="Communication">BER</abbr> and another <abbr title="Symbol error rate" data-context="Communication">SER</abbr>"""
+        raw_string = """<abbr title="Bit error rate" data-context="Communication" class="e-abbr">BER</abbr> and another <abbr title="Symbol error rate" data-context="Communication" class="e-abbr">SER</abbr>"""
         tag = "abbr"
         fragments = f2f.find_fragments(raw_string, tag)
 
-        self.assertEquals(fragments, ["""<abbr title="Bit error rate" data-context="Communication">BER</abbr>""", """<abbr title="Symbol error rate" data-context="Communication">SER</abbr>"""])
+        self.assertEquals(fragments, ["""<abbr title="Bit error rate" data-context="Communication" class="e-abbr">BER</abbr>""", """<abbr title="Symbol error rate" data-context="Communication" class="e-abbr">SER</abbr>"""])
 
     def test_fragments_spanning_lines(self):
         """Ensure that fragments can span multiple lines"""
@@ -48,7 +48,7 @@ class TestExtractFlashcardData(unittest.TestCase):
     def test_extract_abbreviation(self):
         """Abbreviations should be able to be extracted"""
 
-        raw_string = """<abbr title="Bit error rate" data-context="Communication">BER</abbr>"""
+        raw_string = """<abbr title="Bit error rate" data-context="Communication" class="e-abbr">BER</abbr>"""
         tag = "abbr"
         fragments = f2f.find_fragments(raw_string, tag)
 
@@ -56,7 +56,7 @@ class TestExtractFlashcardData(unittest.TestCase):
 
         self.assertEquals(data, {"full": "Bit error rate", "context": "Communication", "abbreviation": "BER"})
 
-        raw_string = """<abbr title="Symbol error rate" data-context="Communication">SER</abbr>"""
+        raw_string = """<abbr title="Symbol error rate" data-context="Communication" class="e-abbr">SER</abbr>"""
         tag = "abbr"
         fragments = f2f.find_fragments(raw_string, tag)
 
@@ -67,7 +67,7 @@ class TestExtractFlashcardData(unittest.TestCase):
     def test_inject_Anki_ID(self):
         """Ability to inject Anki ID in elements"""
 
-        raw_string = """<abbr title="Bit error rate" data-context="Communication">BER</abbr>"""
+        raw_string = """<abbr title="Bit error rate" data-context="Communication" class="e-abbr">BER</abbr>"""
         tag = "abbr"
         fragments = f2f.find_fragments(raw_string, tag)
 
