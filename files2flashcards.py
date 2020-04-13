@@ -1,6 +1,8 @@
 import re
 import xml.etree.ElementTree as ET
 
+mapping_registry = []
+
 def find_fragments(raw_string, tag):
     """Find HTML fragments by tag.
     
@@ -21,6 +23,27 @@ def inject_Anki_ID(root, id):
 
     return root
 
-    root.attrib["data-anki-id"] = str(id)
+def add_format(tag, class_name, mapping_function):
+    mapping_registry.append({
+        "tag": tag,
+        "class_name": class_name,
+        "mapping_function": mapping_function
+    })
 
-    return ET.tostring(root, encoding="unicode")
+def process_file(path):
+    with open(path, 'r+') as f:
+        content = f.read()
+
+        for mapping in mapping_registry:
+            fragments = find_fragments(content, mapping["tag"])
+            for fragment in fragments:
+                root = ET.fromstring(fragment)
+                data = extract_abbreviation(root)
+                root = inject_Anki_ID(root, 1234)
+
+                new_fragment = ET.tostring(root, encoding="unicode")
+
+                content = content.replace(fragment, new_fragment)
+
+        f.seek(0)
+        f.write(content)
