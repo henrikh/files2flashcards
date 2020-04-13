@@ -52,7 +52,9 @@ class TestExtractFlashcardData(unittest.TestCase):
         tag = "abbr"
         fragments = f2f.find_fragments(raw_string, tag)
 
-        data = f2f.extract_abbreviation(fragments[0])
+        root = ET.fromstring(fragments[0])
+
+        data = f2f.extract_abbreviation(root)
 
         self.assertEquals(data, {"full": "Bit error rate", "context": "Communication", "abbreviation": "BER"})
 
@@ -60,7 +62,9 @@ class TestExtractFlashcardData(unittest.TestCase):
         tag = "abbr"
         fragments = f2f.find_fragments(raw_string, tag)
 
-        data = f2f.extract_abbreviation(fragments[0])
+        root = ET.fromstring(fragments[0])
+
+        data = f2f.extract_abbreviation(root)
 
         self.assertEquals(data, {"full": "Symbol error rate", "context": "Communication", "abbreviation": "SER"})
 
@@ -71,7 +75,11 @@ class TestExtractFlashcardData(unittest.TestCase):
         tag = "abbr"
         fragments = f2f.find_fragments(raw_string, tag)
 
-        fragment = f2f.inject_Anki_ID(fragments[0], 1234)
+        root = ET.fromstring(fragments[0])
+
+        root = f2f.inject_Anki_ID(root, 1234)
+
+        fragment = ET.tostring(root, encoding="unicode")
 
         root = ET.fromstring(fragment)
 
@@ -79,7 +87,9 @@ class TestExtractFlashcardData(unittest.TestCase):
 
         fragments = f2f.find_fragments(fragment, tag)
 
-        data = f2f.extract_abbreviation(fragments[0])
+        root = ET.fromstring(fragments[0])
+
+        data = f2f.extract_abbreviation(root)
 
         self.assertEquals(data, {"full": "Bit error rate", "context": "Communication", "abbreviation": "BER"})
 
