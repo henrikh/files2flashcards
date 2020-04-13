@@ -38,12 +38,13 @@ def process_file(path):
             fragments = find_fragments(content, mapping["tag"])
             for fragment in fragments:
                 root = ET.fromstring(fragment)
-                data = extract_abbreviation(root)
-                root = inject_Anki_ID(root, 1234)
+                if "class" in root.attrib and mapping["class_name"] in root.attrib['class']:
+                    data = extract_abbreviation(root)
+                    root = inject_Anki_ID(root, 1234)
 
-                new_fragment = ET.tostring(root, encoding="unicode")
+                    new_fragment = ET.tostring(root, encoding="unicode")
 
-                content = content.replace(fragment, new_fragment)
+                    content = content.replace(fragment, new_fragment)
 
         f.seek(0)
         f.write(content)

@@ -29,5 +29,27 @@ class TestProcessFile(unittest.TestCase):
 
             print(content)
 
+    def test_process_file_no_flashcards(self):
+        """There can be things which looks like flashcards, but aren't
+        
+        Here we check that when the e-abbr class is not present, then flashcards shouldn't be processed"""
+
+        f2f.add_format("abbr", "e-abbr", f2f.extract_abbreviation)
+
+        tmp_dir = tempfile.gettempdir()
+        shutil.copyfile("tests/test_no_flashcard.tid", tmp_dir + "/" + "test.tid")
+
+        content_before = ""
+
+        with open(tmp_dir + "/" + "test.tid") as f:
+            content_before = f.read()
+
+        f2f.process_file(tmp_dir + "/" + "test.tid")
+
+        with open(tmp_dir + "/" + "test.tid") as f:
+            content = f.read()
+
+            self.assertEqual(content, content_before)
+
 if __name__ == '__main__':
     unittest.main()
