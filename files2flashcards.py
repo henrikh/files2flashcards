@@ -42,7 +42,7 @@ def process_file(path):
             for fragment in fragments:
                 root = ET.fromstring(fragment)
                 if "class" in root.attrib and mapping["class_name"] in root.attrib['class']:
-                    data = extract_abbreviation(root)
+                    data = mapping["mapping_function"](root)
 
                     if 'data-anki-id' in root.attrib:
                         AnkiConnectWrapper.update_note(root.attrib['data-anki-id'], data)
