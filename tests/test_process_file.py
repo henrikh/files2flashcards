@@ -12,7 +12,7 @@ class TestProcessFile(unittest.TestCase):
 
         f2f.add_format(
             tag="abbr",
-            class_name="e-abbr",
+            class_name="h-fcard",
             note_type="abbreviation",
             mapping_function=f2f.extract_abbreviation)
 
@@ -37,11 +37,11 @@ class TestProcessFile(unittest.TestCase):
     def test_process_file_no_flashcards(self):
         """There can be things which looks like flashcards, but aren't
         
-        Here we check that when the e-abbr class is not present, then flashcards shouldn't be processed"""
+        Here we check that when the h-fcard class is not present, then flashcards shouldn't be processed"""
 
         f2f.add_format(
             tag="abbr",
-            class_name="e-abbr",
+            class_name="h-fcard",
             note_type="abbreviation",
             mapping_function=f2f.extract_abbreviation)
 
@@ -65,7 +65,7 @@ class TestProcessFile(unittest.TestCase):
 
         f2f.add_format(
             tag="abbr",
-            class_name="e-abbr",
+            class_name="h-fcard",
             note_type="abbreviation",
             mapping_function=f2f.extract_abbreviation)
 
@@ -89,7 +89,7 @@ class TestProcessFile(unittest.TestCase):
 
         f2f.add_format(
             tag="abbr",
-            class_name="e-abbr",
+            class_name="h-fcard",
             note_type="abbreviation",
             mapping_function=f2f.extract_abbreviation)
 
@@ -107,7 +107,7 @@ class TestProcessFile(unittest.TestCase):
 
         f2f.add_format(
             tag="abbr",
-            class_name="e-abbr",
+            class_name="h-fcard",
             note_type="abbreviation",
             mapping_function=f2f.extract_abbreviation)
 
