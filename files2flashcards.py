@@ -16,7 +16,7 @@ def find_fragments(raw_string, tag):
 def extract_abbreviation(root):
     """Simple function for extracting abbreviation data"""
 
-    return {"full": root.attrib["title"], "context": root.attrib["data-context"], "abbreviation": root.text}
+    return {"Full": root.attrib["title"], "Context": root.attrib["data-context"], "Abbreviation": root.text}
 
 def extract_abbreviation_basic(root):
     """Simple function for extracting abbreviation data"""

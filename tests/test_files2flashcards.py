@@ -59,7 +59,7 @@ class TestExtractFlashcardData(unittest.TestCase):
 
         data = f2f.extract_abbreviation(root)
 
-        self.assertEquals(data, {"full": "Bit error rate", "context": "Communication", "abbreviation": "BER"})
+        self.assertEquals(data, {"Full": "Bit error rate", "Context": "Communication", "Abbreviation": "BER"})
 
         raw_string = """<abbr title="Symbol error rate" data-context="Communication" class="h-fcard">SER</abbr>"""
         tag = "abbr"
@@ -69,7 +69,7 @@ class TestExtractFlashcardData(unittest.TestCase):
 
         data = f2f.extract_abbreviation(root)
 
-        self.assertEquals(data, {"full": "Symbol error rate", "context": "Communication", "abbreviation": "SER"})
+        self.assertEquals(data, {"Full": "Symbol error rate", "Context": "Communication", "Abbreviation": "SER"})
 
     def test_inject_Anki_ID(self):
         """Ability to inject Anki ID in elements"""
@@ -94,17 +94,26 @@ class TestExtractFlashcardData(unittest.TestCase):
 
         data = f2f.extract_abbreviation(root)
 
-        self.assertEquals(data, {"full": "Bit error rate", "context": "Communication", "abbreviation": "BER"})
+        self.assertEquals(data, {"Full": "Bit error rate", "Context": "Communication", "Abbreviation": "BER"})
 
 class TestProcessFile(unittest.TestCase):
+
+    def setUp(self):
+        f2f.AnkiConnectWrapper.add_note = MagicMock()
+        f2f.AnkiConnectWrapper.add_note.return_value = "1234"
+        f2f.AnkiConnectWrapper.update_note = MagicMock()
 
     def test_process_file(self):
         """Register formats and process a file"""
 
+        f2f.AnkiConnectWrapper.add_note = MagicMock()
+        f2f.AnkiConnectWrapper.add_note.return_value = "1234"
+        f2f.AnkiConnectWrapper.update_note = MagicMock()
+
         f2f.add_format(
             tag="abbr",
             class_name="h-fcard",
-            note_type="abbreviation",
+            note_type="Abbreviation",
             mapping_function=f2f.extract_abbreviation)
 
         tmp_dir_o = tempfile.TemporaryDirectory()
@@ -122,7 +131,7 @@ class TestProcessFile(unittest.TestCase):
 
             data = f2f.extract_abbreviation(root)
 
-            self.assertEquals(data, {"full": "Bit error rate", "context": "Communication", "abbreviation": "BER"})
+            self.assertEquals(data, {"Full": "Bit error rate", "Context": "Communication", "Abbreviation": "BER"})
 
             print(content)
 
@@ -134,7 +143,7 @@ class TestProcessFile(unittest.TestCase):
         f2f.add_format(
             tag="abbr",
             class_name="h-fcard",
-            note_type="abbreviation",
+            note_type="Abbreviation",
             mapping_function=f2f.extract_abbreviation)
 
         tmp_dir_o = tempfile.TemporaryDirectory()
@@ -159,7 +168,7 @@ class TestProcessFile(unittest.TestCase):
         f2f.add_format(
             tag="abbr",
             class_name="h-fcard",
-            note_type="abbreviation",
+            note_type="Abbreviation",
             mapping_function=f2f.extract_abbreviation)
 
         tmp_dir_o = tempfile.TemporaryDirectory()
@@ -171,7 +180,7 @@ class TestProcessFile(unittest.TestCase):
 
         f2f.process_file(tmp_dir + "/" + "test.tid")
 
-        f2f.AnkiConnectWrapper.add_note.assert_called_with("abbreviation", {"full": "Bit error rate", "context": "Communication", "abbreviation":"BER"})
+        f2f.AnkiConnectWrapper.add_note.assert_called_with("Abbreviation", {"Full": "Bit error rate", "Context": "Communication", "Abbreviation":"BER"})
 
         with open(tmp_dir + "/" + "test.tid") as f:
             content = f.read()
@@ -184,7 +193,7 @@ class TestProcessFile(unittest.TestCase):
         f2f.add_format(
             tag="abbr",
             class_name="h-fcard",
-            note_type="abbreviation",
+            note_type="Abbreviation",
             mapping_function=f2f.extract_abbreviation)
 
         tmp_dir_o = tempfile.TemporaryDirectory()
@@ -195,7 +204,7 @@ class TestProcessFile(unittest.TestCase):
 
         f2f.process_file(tmp_dir + "/" + "test.tid")
 
-        f2f.AnkiConnectWrapper.update_note.assert_called_with("654321", {"full": "Bit error rate", "context": "Communication", "abbreviation":"BER"})
+        f2f.AnkiConnectWrapper.update_note.assert_called_with("654321", {"Full": "Bit error rate", "Context": "Communication", "Abbreviation":"BER"})
 
     def test_process_files(self):
         """Process multiple files"""
@@ -203,7 +212,7 @@ class TestProcessFile(unittest.TestCase):
         f2f.add_format(
             tag="abbr",
             class_name="h-fcard",
-            note_type="abbreviation",
+            note_type="Abbreviation",
             mapping_function=f2f.extract_abbreviation)
 
         tmp_dir_o = tempfile.TemporaryDirectory()
