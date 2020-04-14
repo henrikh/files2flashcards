@@ -16,7 +16,8 @@ class TestProcessFile(unittest.TestCase):
             note_type="abbreviation",
             mapping_function=f2f.extract_abbreviation)
 
-        tmp_dir = tempfile.gettempdir()
+        tmp_dir_o = tempfile.TemporaryDirectory()
+        tmp_dir = tmp_dir_o.name
         shutil.copyfile("tests/test.tid", tmp_dir + "/" + "test.tid")
 
         f2f.process_file(tmp_dir + "/" + "test.tid")
@@ -45,7 +46,8 @@ class TestProcessFile(unittest.TestCase):
             note_type="abbreviation",
             mapping_function=f2f.extract_abbreviation)
 
-        tmp_dir = tempfile.gettempdir()
+        tmp_dir_o = tempfile.TemporaryDirectory()
+        tmp_dir = tmp_dir_o.name
         shutil.copyfile("tests/test_no_flashcard.tid", tmp_dir + "/" + "test.tid")
 
         content_before = ""
@@ -69,7 +71,8 @@ class TestProcessFile(unittest.TestCase):
             note_type="abbreviation",
             mapping_function=f2f.extract_abbreviation)
 
-        tmp_dir = tempfile.gettempdir()
+        tmp_dir_o = tempfile.TemporaryDirectory()
+        tmp_dir = tmp_dir_o.name
         shutil.copyfile("tests/test.tid", tmp_dir + "/" + "test.tid")
 
         f2f.AnkiConnectWrapper.add_note = MagicMock()
@@ -93,7 +96,8 @@ class TestProcessFile(unittest.TestCase):
             note_type="abbreviation",
             mapping_function=f2f.extract_abbreviation)
 
-        tmp_dir = tempfile.gettempdir()
+        tmp_dir_o = tempfile.TemporaryDirectory()
+        tmp_dir = tmp_dir_o.name
         shutil.copyfile("tests/test_existing_note.tid", tmp_dir + "/" + "test.tid")
 
         f2f.AnkiConnectWrapper.update_note = MagicMock()
