@@ -102,5 +102,26 @@ class TestProcessFile(unittest.TestCase):
 
         f2f.AnkiConnectWrapper.update_note.assert_called_with("654321", {"full": "Bit error rate", "context": "Communication", "abbreviation":"BER"})
 
+    def test_process_files(self):
+        """Process multiple files"""
+
+        f2f.add_format(
+            tag="abbr",
+            class_name="e-abbr",
+            note_type="abbreviation",
+            mapping_function=f2f.extract_abbreviation)
+
+        tmp_dir_o = tempfile.TemporaryDirectory()
+        tmp_dir = tmp_dir_o.name
+
+        shutil.copyfile("tests/test.tid", tmp_dir + "/" + "test1.tid")
+        shutil.copyfile("tests/test.tid", tmp_dir + "/" + "test2.tid")
+
+        f2f.process_file = MagicMock()
+
+        f2f.process_files(tmp_dir)
+
+        self.assertEquals(f2f.process_file.call_count, 2)
+
 if __name__ == '__main__':
     unittest.main()

@@ -1,6 +1,7 @@
 import re
 import xml.etree.ElementTree as ET
 import AnkiConnectWrapper
+import os
 
 mapping_registry = []
 
@@ -57,3 +58,7 @@ def process_file(path):
         # TODO: What happens if a request fails?
         f.seek(0)
         f.write(content)
+
+def process_files(path):
+    for file in os.listdir(path):
+        process_file(path + "/" + file)
