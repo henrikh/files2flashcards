@@ -55,9 +55,9 @@ def process_file(path):
 
                         content = content.replace(fragment, new_fragment)
 
-        # TODO: What happens if a request fails?
-        f.seek(0)
-        f.write(content)
+                    # TODO: What happens if a request fails?
+                    f.seek(0)
+                    f.write(content)
 
 def process_files(path):
     for file in os.listdir(path):
