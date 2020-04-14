@@ -236,10 +236,23 @@ class TestIntegration(unittest.TestCase):
 
         f2f.process_file(tmp_dir + "/" + "test.tid")
 
-        with open(tmp_dir + "/" + "test.tid") as f:
+        with open(tmp_dir + "/" + "test.tid", "r+") as f:
             content = f.read()
 
             print(content)
+
+            content = content.replace("BER", "SER")
+            content = content.replace("Bit", "Symbol")
+
+            f.seek(0)
+            f.write(content)
+            f.seek(0)
+            content = f.read()
+            print(content)
+
+        f2f.process_file(tmp_dir + "/" + "test.tid")
+
+        f2f.AnkiConnectWrapper.invoke("deleteDecks", {"decks": ["Test"], "cardsToo": True})
 
 if __name__ == '__main__':
     unittest.main()
