@@ -218,5 +218,28 @@ class TestProcessFile(unittest.TestCase):
 
         self.assertEquals(f2f.process_file.call_count, 2)
 
+class TestIntegration(unittest.TestCase):
+
+    def test_new_note(self):
+        f2f.AnkiConnectWrapper.deck_name = "Test"
+        f2f.AnkiConnectWrapper.invoke("createDeck", {"deck": "Test"})
+
+        f2f.add_format(
+            tag="abbr",
+            class_name="h-fcard",
+            note_type="Basic",
+            mapping_function=f2f.extract_abbreviation_basic)
+
+        tmp_dir_o = tempfile.TemporaryDirectory()
+        tmp_dir = tmp_dir_o.name
+        shutil.copyfile("tests/test.tid", tmp_dir + "/" + "test.tid")
+
+        f2f.process_file(tmp_dir + "/" + "test.tid")
+
+        with open(tmp_dir + "/" + "test.tid") as f:
+            content = f.read()
+
+            print(content)
+
 if __name__ == '__main__':
     unittest.main()

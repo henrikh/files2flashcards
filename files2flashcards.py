@@ -18,6 +18,11 @@ def extract_abbreviation(root):
 
     return {"full": root.attrib["title"], "context": root.attrib["data-context"], "abbreviation": root.text}
 
+def extract_abbreviation_basic(root):
+    """Simple function for extracting abbreviation data"""
+
+    return {"Back": root.attrib["title"], "Front": root.text}
+
 def inject_Anki_ID(root, id):
     """Inject an Anki ID into fragment"""
 
