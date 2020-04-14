@@ -16,7 +16,7 @@ def invoke(action, params):
     return response['result']
 
 def add_note(note_type, fields):
-    params = {
+    params = {"note": {
         "deckName": deck_name,
         "modelName": note_type,
         "fields": fields,
@@ -24,14 +24,14 @@ def add_note(note_type, fields):
             "allowDuplicates": False
             },
         "tags": []
-        }
+        }}
 
     return invoke("addNote", params)
 
 def update_note(note_id, fields):
-    params = {
+    params = {"note":{
         "id": note_id,
         "fields": fields
-        }
+        }}
 
     invoke("updateNoteFields", params)

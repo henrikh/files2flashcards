@@ -16,14 +16,15 @@ class TestAnkiConnectWrapper(unittest.TestCase):
         self.assertEquals(id, "12345")
 
         acw.invoke.assert_called_with("addNote",
-            {"deckName": "Default",
-            "modelName": "Basic",
-            "fields": {"Front": "front content", "Back": "back content"},
-            "options": {
-                "allowDuplicates": False
-                },
-            "tags": []
-            })
+            {"note":
+                {"deckName": "Default",
+                "modelName": "Basic",
+                "fields": {"Front": "front content", "Back": "back content"},
+                "options": {
+                    "allowDuplicates": False
+                    },
+                "tags": []
+            }})
 
     def test_update_note(self):
         """Calling convention for adding note"""
@@ -33,8 +34,8 @@ class TestAnkiConnectWrapper(unittest.TestCase):
         acw.update_note("12345", {"Front": "front content", "Back": "back content"})
 
         acw.invoke.assert_called_with("updateNoteFields",
-            {"id": "12345",
-            "fields": {"Front": "front content", "Back": "back content"}})
+            {"note": {"id": "12345",
+            "fields": {"Front": "front content", "Back": "back content"}}})
 
 if __name__ == '__main__':
     unittest.main()
