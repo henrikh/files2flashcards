@@ -206,8 +206,8 @@ class TestProcessFile(unittest.TestCase):
 
         f2f.AnkiConnectWrapper.update_note.assert_called_with("654321", {"Full": "Bit error rate", "Context": "Communication", "Abbreviation":"BER"})
 
-    def test_process_files(self):
-        """Process multiple files"""
+    def test_process_folder(self):
+        """Process a whole folder of notes"""
 
         f2f.add_format(
             tag="abbr",
@@ -223,7 +223,7 @@ class TestProcessFile(unittest.TestCase):
 
         f2f.process_file = MagicMock()
 
-        f2f.process_files(tmp_dir)
+        f2f.process_folder(tmp_dir)
 
         self.assertEquals(f2f.process_file.call_count, 2)
 

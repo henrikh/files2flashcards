@@ -64,6 +64,6 @@ def process_file(path):
                     f.seek(0)
                     f.write(content)
 
-def process_files(path):
+def process_folder(path):
     for file in os.listdir(path):
         process_file(path + "/" + file)
