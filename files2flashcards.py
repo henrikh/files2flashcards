@@ -47,6 +47,8 @@ def process_file(path):
         if taboo_word is not None and taboo_word in content:
             return
 
+        print(path)
+
         for mapping in mapping_registry:
             fragments = find_fragments(content, mapping["tag"])
             for fragment in fragments:
