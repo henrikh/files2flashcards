@@ -135,6 +135,35 @@ class TestProcessFile(unittest.TestCase):
 
             print(content)
 
+    def test_process_file_taboo_word(self):
+        """Ignore files with the taboo word"""
+
+        f2f.AnkiConnectWrapper.add_note = MagicMock()
+        f2f.AnkiConnectWrapper.add_note.return_value = "1234"
+        f2f.AnkiConnectWrapper.update_note = MagicMock()
+
+        f2f.taboo_word = "Taboo!"
+
+        f2f.add_format(
+            tag="abbr",
+            class_name="h-fcard",
+            note_type="Abbreviation",
+            mapping_function=f2f.extract_abbreviation)
+
+        tmp_dir_o = tempfile.TemporaryDirectory()
+        tmp_dir = tmp_dir_o.name
+        shutil.copyfile("tests/test_taboo.tid", tmp_dir + "/" + "test.tid")
+
+        content_before = ""
+
+        with open(tmp_dir + "/" + "test.tid", encoding='utf-8') as f:
+            content_before = f.read()
+
+        f2f.process_file(tmp_dir + "/" + "test.tid")
+
+        with open(tmp_dir + "/" + "test.tid", encoding='utf-8') as f:
+            self.assertEquals(content_before, f.read())
+
     def test_process_file_no_flashcards(self):
         """There can be things which looks like flashcards, but aren't
         

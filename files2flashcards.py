@@ -3,6 +3,8 @@ import xml.etree.ElementTree as ET
 import AnkiConnectWrapper
 import os
 
+taboo_word = None
+
 mapping_registry = []
 
 def find_fragments(raw_string, tag):
@@ -41,6 +43,9 @@ def add_format(tag, class_name, note_type, mapping_function):
 def process_file(path):
     with open(path, 'r+', encoding='utf-8') as f:
         content = f.read()
+
+        if taboo_word is not None and taboo_word in content:
+            return
 
         for mapping in mapping_registry:
             fragments = find_fragments(content, mapping["tag"])
