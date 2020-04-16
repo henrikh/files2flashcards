@@ -152,12 +152,12 @@ class TestProcessFile(unittest.TestCase):
 
         content_before = ""
 
-        with open(tmp_dir + "/" + "test.tid") as f:
+        with open(tmp_dir + "/" + "test.tid", encoding='utf-8') as f:
             content_before = f.read()
 
         f2f.process_file(tmp_dir + "/" + "test.tid")
 
-        with open(tmp_dir + "/" + "test.tid") as f:
+        with open(tmp_dir + "/" + "test.tid", encoding='utf-8') as f:
             content = f.read()
 
             self.assertEqual(content, content_before)
