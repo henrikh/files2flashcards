@@ -227,6 +227,27 @@ class TestProcessFile(unittest.TestCase):
 
         self.assertEquals(f2f.process_file.call_count, 2)
 
+    def test_process_folder_regex(self):
+        """Use a regex to limit which files are processed"""
+
+        f2f.add_format(
+            tag="abbr",
+            class_name="h-fcard",
+            note_type="Abbreviation",
+            mapping_function=f2f.extract_abbreviation)
+
+        tmp_dir_o = tempfile.TemporaryDirectory()
+        tmp_dir = tmp_dir_o.name
+
+        shutil.copyfile("tests/test.tid", tmp_dir + "/" + "test1.tid")
+        shutil.copyfile("tests/test.tid", tmp_dir + "/" + "test2.md")
+
+        f2f.process_file = MagicMock()
+
+        f2f.process_folder(tmp_dir, regex=r'\.tid$')
+
+        self.assertEquals(f2f.process_file.call_count, 1)
+
 class TestIntegration(unittest.TestCase):
 
     def test_new_note(self):

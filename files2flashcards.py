@@ -64,6 +64,7 @@ def process_file(path):
                     f.seek(0)
                     f.write(content)
 
-def process_folder(path):
+def process_folder(path, regex=r''):
     for file in os.listdir(path):
-        process_file(path + "/" + file)
+        if re.search(regex, file) is not None:
+            process_file(path + "/" + file)
