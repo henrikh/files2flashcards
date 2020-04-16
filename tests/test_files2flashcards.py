@@ -122,7 +122,7 @@ class TestProcessFile(unittest.TestCase):
 
         f2f.process_file(tmp_dir + "/" + "test.tid")
 
-        with open(tmp_dir + "/" + "test.tid") as f:
+        with open(tmp_dir + "/" + "test.tid", encoding='utf-8') as f:
             content = f.read()
 
             fragments = f2f.find_fragments(content, "abbr")
@@ -182,7 +182,7 @@ class TestProcessFile(unittest.TestCase):
 
         f2f.AnkiConnectWrapper.add_note.assert_called_with("Abbreviation", {"Full": "Bit error rate", "Context": "Communication", "Abbreviation":"BER"})
 
-        with open(tmp_dir + "/" + "test.tid") as f:
+        with open(tmp_dir + "/" + "test.tid", encoding='utf-8') as f:
             content = f.read()
 
             self.assertIn("123456", content)
@@ -266,7 +266,7 @@ class TestIntegration(unittest.TestCase):
 
         f2f.process_file(tmp_dir + "/" + "test.tid")
 
-        with open(tmp_dir + "/" + "test.tid", "r+") as f:
+        with open(tmp_dir + "/" + "test.tid", "r+", encoding='utf-8') as f:
             content = f.read()
 
             print(content)

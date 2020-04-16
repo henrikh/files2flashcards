@@ -39,7 +39,7 @@ def add_format(tag, class_name, note_type, mapping_function):
     })
 
 def process_file(path):
-    with open(path, 'r+') as f:
+    with open(path, 'r+', encoding='utf-8') as f:
         content = f.read()
 
         for mapping in mapping_registry:
