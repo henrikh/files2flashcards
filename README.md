@@ -124,8 +124,8 @@ Dream features
 * Performance evaluation
 * Error handling
 * Logging
-* Support  for adding media to Anki
-* Support for other formats of flashcard data
+* Support for adding media to Anki
+* Support for other formats of flashcard data (something else than XML)
 * Support for other flashcard apps
 * Daemon / autorun
 * Documentation
