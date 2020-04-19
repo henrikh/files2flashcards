@@ -25,6 +25,21 @@ def extract_abbreviation_basic(root):
 
     return {"Back": root.attrib["title"], "Front": root.text}
 
+def extract_cloze(root):
+    """Simple function for extracting cloze deletion data"""
+
+    output = ""
+    counter = 1
+    for child in root:
+        tail = ""
+        if child.tail is not None:
+            tail = child.tail
+
+        output = output + "{{c" + str(counter) + "::" + child.text + "}}" + tail
+        counter = counter + 1
+
+    return {"Text": output, "Extra": ""}
+
 def inject_Anki_ID(root, id):
     """Inject an Anki ID into fragment"""
 

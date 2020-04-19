@@ -96,6 +96,42 @@ class TestExtractFlashcardData(unittest.TestCase):
 
         self.assertEquals(data, {"Full": "Bit error rate", "Context": "Communication", "Abbreviation": "BER"})
 
+    def test_extract_cloze_data_simple(self):
+        """Cloze deletion data should be able to be extracted"""
+
+        raw_string = """<span class="h-fcard e-cloze"><em>This</em></span>"""
+        tag = "span"
+        fragments = f2f.find_fragments(raw_string, tag)
+
+        root = ET.fromstring(fragments[0])
+
+        data = f2f.extract_cloze(root)
+
+        self.assertEquals(data, {"Text": "{{c1::This}}", "Extra": ""})
+
+        raw_string = """<span class="h-fcard e-cloze"><em>That</em></span>"""
+        tag = "span"
+        fragments = f2f.find_fragments(raw_string, tag)
+
+        root = ET.fromstring(fragments[0])
+
+        data = f2f.extract_cloze(root)
+
+        self.assertEquals(data, {"Text": "{{c1::That}}", "Extra": ""})
+
+    def test_extract_cloze_data_advanced(self):
+        """Cloze deletion data should be able to be extracted"""
+
+        raw_string = """<span class="h-fcard e-cloze"><em>This</em> is a <em>cloze</em></span>"""
+        tag = "span"
+        fragments = f2f.find_fragments(raw_string, tag)
+
+        root = ET.fromstring(fragments[0])
+
+        data = f2f.extract_cloze(root)
+
+        self.assertEquals(data, {"Text": "{{c1::This}} is a {{c2::cloze}}", "Extra": ""})
+
 class TestProcessFile(unittest.TestCase):
 
     def setUp(self):
