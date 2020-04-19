@@ -135,8 +135,8 @@ class TestProcessFile(unittest.TestCase):
 
             print(content)
 
-    def test_process_file_return_ElementTree_no_change(self):
-        """Mapping functions are allowed to return an edited ElementTree. This test confirms, that if the ElementTree is returned unchanged then nothing is changed in effect"""
+    def test_process_file_return_ElementTree_modified(self):
+        """Modify the ElementTree in the mapping function"""
 
         f2f.AnkiConnectWrapper.add_note = MagicMock()
         f2f.AnkiConnectWrapper.add_note.return_value = "1234"
@@ -144,45 +144,27 @@ class TestProcessFile(unittest.TestCase):
 
         tmp_dir_o = tempfile.TemporaryDirectory()
         tmp_dir = tmp_dir_o.name
-        shutil.copyfile("tests/test.tid", tmp_dir + "/" + "test1.tid")
-        shutil.copyfile("tests/test.tid", tmp_dir + "/" + "test2.tid")
+        shutil.copyfile("tests/test.tid", tmp_dir + "/" + "test.tid")
+
+        def edit_ElementTree(root):
+            root.attrib["data-dummy"] = "test"
+            return f2f.extract_abbreviation(root)
 
         f2f.add_format(
             tag="abbr",
             class_name="h-fcard",
             note_type="Abbreviation",
-            mapping_function=f2f.extract_abbreviation)
+            mapping_function=edit_ElementTree)
 
-        f2f.process_file(tmp_dir + "/" + "test1.tid")
+        f2f.process_file(tmp_dir + "/" + "test.tid")
 
-        f2f.mapping_registry = []
+        with open(tmp_dir + "/" + "test.tid", encoding='utf-8') as f:
+            content = f.read()
 
-        def return_ElementTree(root):
-            return (f2f.extract_abbreviation(root), root)
+            self.assertIn('data-dummy="test"', content)
 
-        f2f.add_format(
-            tag="abbr",
-            class_name="h-fcard",
-            note_type="Abbreviation",
-            mapping_function=return_ElementTree)
-
-        f2f.process_file(tmp_dir + "/" + "test2.tid")
-
-        content_1 = ""
-
-        with open(tmp_dir + "/" + "test1.tid", encoding='utf-8') as f:
-            content_1 = f.read()
-
-        with open(tmp_dir + "/" + "test2.tid", encoding='utf-8') as f:
-            content_2 = f.read()
-            self.assertEquals(content_1, content_2)
-
-        call_args = f2f.AnkiConnectWrapper.add_note.call_args_list
-
-        self.assertEquals(call_args[0][0], call_args[1][0])
-
-    def test_process_file_return_ElementTree_no_change_existing_note(self):
-        """Mapping functions are allowed to return an edited ElementTree. This test confirms, that if the ElementTree is returned unchanged then nothing is changed in effect"""
+    def test_process_file_return_ElementTree_modified_existing(self):
+        """Modify the ElementTree in the mapping function"""
 
         f2f.AnkiConnectWrapper.add_note = MagicMock()
         f2f.AnkiConnectWrapper.add_note.return_value = "1234"
@@ -190,42 +172,24 @@ class TestProcessFile(unittest.TestCase):
 
         tmp_dir_o = tempfile.TemporaryDirectory()
         tmp_dir = tmp_dir_o.name
-        shutil.copyfile("tests/test_existing_note.tid", tmp_dir + "/" + "test1.tid")
-        shutil.copyfile("tests/test_existing_note.tid", tmp_dir + "/" + "test2.tid")
+        shutil.copyfile("tests/test_existing_note.tid", tmp_dir + "/" + "test.tid")
+
+        def edit_ElementTree(root):
+            root.attrib["data-dummy"] = "test"
+            return f2f.extract_abbreviation(root)
 
         f2f.add_format(
             tag="abbr",
             class_name="h-fcard",
             note_type="Abbreviation",
-            mapping_function=f2f.extract_abbreviation)
+            mapping_function=edit_ElementTree)
 
-        f2f.process_file(tmp_dir + "/" + "test1.tid")
+        f2f.process_file(tmp_dir + "/" + "test.tid")
 
-        f2f.mapping_registry = []
+        with open(tmp_dir + "/" + "test.tid", encoding='utf-8') as f:
+            content = f.read()
 
-        def return_ElementTree(root):
-            return (f2f.extract_abbreviation(root), root)
-
-        f2f.add_format(
-            tag="abbr",
-            class_name="h-fcard",
-            note_type="Abbreviation",
-            mapping_function=return_ElementTree)
-
-        f2f.process_file(tmp_dir + "/" + "test2.tid")
-
-        content_1 = ""
-
-        with open(tmp_dir + "/" + "test1.tid", encoding='utf-8') as f:
-            content_1 = f.read()
-
-        with open(tmp_dir + "/" + "test2.tid", encoding='utf-8') as f:
-            content_2 = f.read()
-            self.assertEquals(content_1, content_2)
-
-        call_args = f2f.AnkiConnectWrapper.update_note.call_args_list
-
-        self.assertEquals(call_args[0][0], call_args[1][0])
+            self.assertIn('data-dummy="test"', content)
 
     def test_process_file_taboo_word(self):
         """Ignore files with the taboo word"""

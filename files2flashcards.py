@@ -56,14 +56,6 @@ def process_file(path):
                 if "class" in root.attrib and mapping["class_name"] in root.attrib['class']:
                     data = mapping["mapping_function"](root)
 
-                    # If the mapping function returns a tuple then 
-                    # first item is the field data used for
-                    # flashcards and the second an updated
-                    # ElementTree.
-                    if isinstance(data, tuple):
-                        root = data[1]
-                        data = data[0]
-
                     if 'data-anki-id' in root.attrib:
                         AnkiConnectWrapper.update_note(root.attrib['data-anki-id'], data)
                     else:
@@ -71,9 +63,9 @@ def process_file(path):
 
                         root = inject_Anki_ID(root, note_id)
 
-                        new_fragment = ET.tostring(root, encoding="unicode")
+                    new_fragment = ET.tostring(root, encoding="unicode")
 
-                        content = content.replace(fragment, new_fragment)
+                    content = content.replace(fragment, new_fragment)
 
                     # TODO: What happens if a request fails?
                     f.seek(0)
