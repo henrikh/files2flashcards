@@ -12,7 +12,7 @@ Highlights
 
 * Specify flashcards using XML / HTML
 * Update your notes and see the changes reflected in existing flashcards
-* Flexible and configurable specification of flashcards; design your own formats
+* Flexible and configurable specification of flashcards including cloze deletions; design your own formats
 * See and edit your flashcards in context with other flashcards and notes
 * Written in Python and well-tested
 * Free and open-source software
@@ -82,7 +82,20 @@ f2f.process_folder("./notes/", regex=r'md$')
 
 This is used for updating notes. If the content of the above element is edited, then `files2flashcards` will update the corresponding note in Anki.
 
-How can I help_ / Contributing
+Cloze deletions
+---------------
+
+Cloze deletions are supported using the `extract_cloze` function. In notes, a cloze is specified as the following:
+
+```HTML
+<abbr class="h-fcard e-cloze"><em>This</em> is a <em>cloze</em></abbr>
+```
+
+The `em`-tags are interpreted as the cloze deletions.
+
+Like all other flashcards generated with `files2flashcards`, the implementation is stable. Updating the definition of the cloze deletion updates the flashcards in Anki. Adding new cloze deletions preserves learning progress on all existing clozes. This is done by inserting the cloze's ID into the note, in a similar manner as the note IDs are stored.
+
+_How can I help?_ / Contributing
 ------------------------------
 
 Contributions are welcome, in all kinds:
@@ -133,4 +146,3 @@ Dream features
 * Testing with hypothesis
 * More build in note types
 * Example uses
-* Cloze deletions
