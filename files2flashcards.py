@@ -28,20 +28,28 @@ def extract_abbreviation_basic(root):
 def extract_cloze(root):
     """Simple function for extracting cloze deletion data"""
 
-    output = root.text
-    counter = 1
+    max_cloze_id = 0
+    for child in root:
+        if 'data-id' in child.attrib:
+            max_cloze_id = max(max_cloze_id, int(child.attrib['data-id']))
+
+    output = ""
+    if root.text is not None:
+        output = root.text
+
     for child in root:
         tail = ""
         if child.tail is not None:
             tail = child.tail
 
         if 'data-id' in child.attrib:
-            counter = int(child.attrib['data-id'])
+            cloze_id = int(child.attrib['data-id'])
         else:
-            child.attrib['data-id'] = str(counter)
+            max_cloze_id = max_cloze_id + 1
+            cloze_id = max_cloze_id
+            child.attrib['data-id'] = str(cloze_id)
 
-        output = output + "{{c" + str(counter) + "::" + child.text + "}}" + tail
-        counter = counter + 1
+        output = output + "{{c" + str(cloze_id) + "::" + child.text + "}}" + tail
 
     return {"Text": output, "Extra": ""}
 

@@ -147,7 +147,7 @@ class TestExtractFlashcardData(unittest.TestCase):
         self.assertEquals(root[1].attrib['data-id'], "2")
 
     def test_extract_cloze_reuse_id(self):
-        """Cloze deletions have IDs to ensure stability"""
+        """Cloze deletions should reuse the IDs from the fragment"""
 
         raw_string = """<span class="h-fcard e-cloze">This <em data-id="2">is</em> a <em data-id="1">cloze</em> test</span>"""
         tag = "span"
@@ -158,6 +158,19 @@ class TestExtractFlashcardData(unittest.TestCase):
         data = f2f.extract_cloze(root)
 
         self.assertEquals(data, {"Text": "This {{c2::is}} a {{c1::cloze}} test", "Extra": ""})
+
+    def test_extract_cloze_new_cloze(self):
+        """Cloze deletions should handle new deletions in known fragments"""
+
+        raw_string = """<span class="h-fcard e-cloze">A <em data-id="1">B</em> <em>C</em> <em data-id="2">D</em> E <em>F</em></span>"""
+        tag = "span"
+        fragments = f2f.find_fragments(raw_string, tag)
+
+        root = ET.fromstring(fragments[0])
+
+        data = f2f.extract_cloze(root)
+
+        self.assertEquals(data, {"Text": "A {{c1::B}} {{c3::C}} {{c2::D}} E {{c4::F}}", "Extra": ""})
 
 class TestProcessFile(unittest.TestCase):
 
