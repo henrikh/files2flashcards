@@ -35,6 +35,11 @@ def extract_cloze(root):
         if child.tail is not None:
             tail = child.tail
 
+        if 'data-id' in child.attrib:
+            counter = int(child.attrib['data-id'])
+        else:
+            child.attrib['data-id'] = str(counter)
+
         output = output + "{{c" + str(counter) + "::" + child.text + "}}" + tail
         counter = counter + 1
 
