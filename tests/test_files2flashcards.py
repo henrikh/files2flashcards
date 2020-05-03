@@ -122,7 +122,7 @@ class TestExtractFlashcardData(unittest.TestCase):
     def test_extract_cloze_data_advanced(self):
         """Cloze deletion data should be able to be extracted"""
 
-        raw_string = """<span class="h-fcard e-cloze"><em>This</em> is a <em>cloze</em></span>"""
+        raw_string = """<span class="h-fcard e-cloze">This <em>is</em> a <em>cloze</em> test</span>"""
         tag = "span"
         fragments = f2f.find_fragments(raw_string, tag)
 
@@ -130,7 +130,7 @@ class TestExtractFlashcardData(unittest.TestCase):
 
         data = f2f.extract_cloze(root)
 
-        self.assertEquals(data, {"Text": "{{c1::This}} is a {{c2::cloze}}", "Extra": ""})
+        self.assertEquals(data, {"Text": "This {{c1::is}} a {{c2::cloze}} test", "Extra": ""})
 
 class TestProcessFile(unittest.TestCase):
 

@@ -28,7 +28,7 @@ def extract_abbreviation_basic(root):
 def extract_cloze(root):
     """Simple function for extracting cloze deletion data"""
 
-    output = ""
+    output = root.text
     counter = 1
     for child in root:
         tail = ""
