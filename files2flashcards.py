@@ -2,10 +2,13 @@ import re
 import xml.etree.ElementTree as ET
 import AnkiConnectWrapper
 import os
+import time
 
 taboo_word = None
 
 mapping_registry = []
+
+DATA_FILE = ".files2flashcards"
 
 def find_fragments(raw_string, tag):
     """Find HTML fragments by tag.
@@ -99,7 +102,32 @@ def process_file(path):
                     f.seek(0)
                     f.write(content)
 
-def process_folder(path, regex=r''):
+def process_folder(path, regex=r'', only_changed=False):
+
+    last_run = 0.0
+
+    data_file_path = path + "/" + DATA_FILE
+
+    if only_changed and os.path.exists(data_file_path):
+        with open(data_file_path, "r") as f:
+            date = f.read()
+            if len(date):
+                last_run = float(date)
+
+    current_run = time.time()
+
     for file in os.listdir(path):
+        file_path = path + "/" + file
+
+        if file == DATA_FILE:
+            continue
+
+        if only_changed and os.path.getmtime(file_path) < last_run:
+            continue
+
         if re.search(regex, file) is not None:
-            process_file(path + "/" + file)
+            process_file(file_path)
+    
+    if only_changed:
+        with open(data_file_path, "w") as f:
+            f.write(str(current_run))
