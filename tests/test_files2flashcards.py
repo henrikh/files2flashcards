@@ -410,7 +410,7 @@ class TestProcessFile(unittest.TestCase):
         self.assertEquals(f2f.process_file.call_count, 1)
 
     def test_process_folder_changed(self):
-        """Use a regex to limit which files are processed"""
+        """Only process files if they have changed"""
 
         f2f.add_format(
             tag="abbr",
@@ -423,24 +423,22 @@ class TestProcessFile(unittest.TestCase):
 
         shutil.copyfile("tests/test.tid", tmp_dir + "/" + "test1.tid")
 
-        import time
-        time.sleep(.5)
-
-        f2f.process_file = MagicMock()
+        f2f.AnkiConnectWrapper.add_note = Mock()
+        f2f.AnkiConnectWrapper.add_note.return_value = "12345"
+        f2f.AnkiConnectWrapper.update_note = Mock()
 
         f2f.process_folder(tmp_dir, only_changed=True)
 
-        self.assertEqual(f2f.process_file.call_count, 1)
+        self.assertEqual(f2f.AnkiConnectWrapper.add_note.call_count, 1)
 
-        f2f.process_file.reset_mock()
-
-        self.assertEqual(f2f.process_file.call_count, 0)
+        f2f.AnkiConnectWrapper.add_note.reset_mock()
 
         shutil.copyfile("tests/test.tid", tmp_dir + "/" + "test2.tid")
 
         f2f.process_folder(tmp_dir, only_changed=True)
 
-        self.assertEqual(f2f.process_file.call_count, 1)
+        self.assertEqual(f2f.AnkiConnectWrapper.add_note.call_count, 1)
+        self.assertEqual(f2f.AnkiConnectWrapper.update_note.call_count, 0)
 
 if __name__ == '__main__':
     unittest.main()

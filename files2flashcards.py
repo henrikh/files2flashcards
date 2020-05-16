@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 import AnkiConnectWrapper
 import os
 import time
+import json
 
 taboo_word = None
 
@@ -105,16 +106,18 @@ def process_file(path):
 def process_folder(path, regex=r'', only_changed=False):
 
     last_run = 0.0
+    previous_processed_files = {}
 
     data_file_path = path + "/" + DATA_FILE
 
     if only_changed and os.path.exists(data_file_path):
         with open(data_file_path, "r") as f:
-            date = f.read()
-            if len(date):
-                last_run = float(date)
+            data = json.load(f)
+            last_run = data['last_run']
+            previous_processed_files = data['processed_files']
 
     current_run = time.time()
+    current_processed_files = {}
 
     for file in os.listdir(path):
         file_path = path + "/" + file
@@ -122,12 +125,23 @@ def process_folder(path, regex=r'', only_changed=False):
         if file == DATA_FILE:
             continue
 
-        if only_changed and os.path.getmtime(file_path) < last_run:
-            continue
+        if only_changed:
+            last_modified = os.path.getmtime(file_path)
+
+            if last_modified < last_run:
+                continue
+
+            if file_path in previous_processed_files and previous_processed_files[file_path] == last_modified:
+                continue
 
         if re.search(regex, file) is not None:
             process_file(file_path)
-    
+            current_processed_files[file_path] = os.path.getmtime(file_path)
+
     if only_changed:
         with open(data_file_path, "w") as f:
-            f.write(str(current_run))
+            data = {
+                'last_run': current_run,
+                'processed_files': current_processed_files
+            }
+            json.dump(data, f)
