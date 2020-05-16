@@ -103,12 +103,15 @@ def process_file(path):
                     f.seek(0)
                     f.write(content)
 
-def process_folder(path, regex=r'', only_changed=False):
+def process_folder(path, regex=r'', only_changed=False, data_file_dir=None):
 
     last_run = 0.0
     previous_processed_files = {}
 
-    data_file_path = path + "/" + DATA_FILE
+    if data_file_dir is None:
+        data_file_dir = path
+
+    data_file_path = data_file_dir + "/" + DATA_FILE
 
     if only_changed and os.path.exists(data_file_path):
         with open(data_file_path, "r") as f:

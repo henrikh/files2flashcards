@@ -440,5 +440,37 @@ class TestProcessFile(unittest.TestCase):
         self.assertEqual(f2f.AnkiConnectWrapper.add_note.call_count, 1)
         self.assertEqual(f2f.AnkiConnectWrapper.update_note.call_count, 0)
 
+    def test_process_folder_changed_custom_folder(self):
+        """Select a different folder for the data file"""
+
+        f2f.add_format(
+            tag="abbr",
+            class_name="h-fcard",
+            note_type="Abbreviation",
+            mapping_function=f2f.extract_abbreviation)
+
+        tmp_dir_o = tempfile.TemporaryDirectory()
+        tmp_dir = tmp_dir_o.name
+
+        tmp_data_dir_o = tempfile.TemporaryDirectory()
+        tmp_data_dir = tmp_data_dir_o.name
+
+        shutil.copyfile("tests/test.tid", tmp_dir + "/" + "test1.tid")
+
+        f2f.AnkiConnectWrapper.add_note = Mock()
+        f2f.AnkiConnectWrapper.add_note.return_value = "12345"
+        f2f.AnkiConnectWrapper.update_note = Mock()
+
+        f2f.process_folder(tmp_dir, only_changed=True, data_file_dir=tmp_data_dir)
+
+        f2f.AnkiConnectWrapper.add_note.reset_mock()
+
+        shutil.copyfile("tests/test.tid", tmp_dir + "/" + "test2.tid")
+
+        f2f.process_folder(tmp_dir, only_changed=True, data_file_dir=tmp_data_dir)
+
+        self.assertEqual(f2f.AnkiConnectWrapper.add_note.call_count, 1)
+        self.assertEqual(f2f.AnkiConnectWrapper.update_note.call_count, 0)
+
 if __name__ == '__main__':
     unittest.main()
