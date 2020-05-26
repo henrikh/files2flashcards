@@ -67,7 +67,7 @@ def extract_abbreviation_basic(root):
 f2f.add_format(
     tag="abbr",
     class_name="h-fcard",
-    note_type="Abbreviation",
+    note_type="Basic",
     mapping_function=extract_abbreviation_basic)
 
 # Process all markdown files in the `notes` directory
