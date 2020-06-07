@@ -71,9 +71,9 @@ class TestExtractFlashcardData(unittest.TestCase):
 
         root = ET.fromstring(fragments[0])
 
-        data = f2f.extract_abbreviation(root)
+        data = f2f.extract_abbreviation_basic(root)
 
-        self.assertEquals(data, {"Full": "Bit error rate", "Context": "Communication", "Abbreviation": "BER"})
+        self.assertEquals(data, {"Back": "Bit error rate", "Front": "BER"})
 
 class TestProcessFile(unittest.TestCase):
 
