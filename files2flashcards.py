@@ -19,43 +19,10 @@ def find_fragments(raw_string, tag):
     regex = "(?s)" + "<" + tag + ".*?</" + tag + ">"
     return re.findall(regex, raw_string)
 
-def extract_abbreviation(root):
-    """Simple function for extracting abbreviation data"""
-
-    return {"Full": root.attrib["title"], "Context": root.attrib["data-context"], "Abbreviation": root.text}
-
 def extract_abbreviation_basic(root):
     """Simple function for extracting abbreviation data"""
 
     return {"Back": root.attrib["title"], "Front": root.text}
-
-def extract_cloze(root):
-    """Simple function for extracting cloze deletion data"""
-
-    max_cloze_id = 0
-    for child in root:
-        if 'data-id' in child.attrib:
-            max_cloze_id = max(max_cloze_id, int(child.attrib['data-id']))
-
-    output = ""
-    if root.text is not None:
-        output = root.text
-
-    for child in root:
-        tail = ""
-        if child.tail is not None:
-            tail = child.tail
-
-        if 'data-id' in child.attrib:
-            cloze_id = int(child.attrib['data-id'])
-        else:
-            max_cloze_id = max_cloze_id + 1
-            cloze_id = max_cloze_id
-            child.attrib['data-id'] = str(cloze_id)
-
-        output = output + "{{c" + str(cloze_id) + "::" + child.text + "}}" + tail
-
-    return {"Text": output, "Extra": ""}
 
 def inject_Anki_ID(root, id):
     """Inject an Anki ID into fragment"""

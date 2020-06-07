@@ -1,6 +1,8 @@
 import unittest
-import files2flashcards as f2f
 import xml.etree.ElementTree as ET
+
+import files2flashcards as f2f
+import formats.abbreviation
 
 class TestFormatsAbbreviation(unittest.TestCase):
 
@@ -13,7 +15,7 @@ class TestFormatsAbbreviation(unittest.TestCase):
 
         root = ET.fromstring(fragments[0])
 
-        data = f2f.extract_abbreviation(root)
+        data = formats.abbreviation.extract(root)
 
         self.assertEquals(data, {"Full": "Bit error rate", "Context": "Communication", "Abbreviation": "BER"})
 
@@ -23,6 +25,6 @@ class TestFormatsAbbreviation(unittest.TestCase):
 
         root = ET.fromstring(fragments[0])
 
-        data = f2f.extract_abbreviation(root)
+        data = formats.abbreviation.extract(root)
 
         self.assertEquals(data, {"Full": "Symbol error rate", "Context": "Communication", "Abbreviation": "SER"})

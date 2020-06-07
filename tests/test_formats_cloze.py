@@ -1,8 +1,10 @@
 import unittest
-import files2flashcards as f2f
 import xml.etree.ElementTree as ET
 
-class TestFormatsAbbreviation(unittest.TestCase):
+import files2flashcards as f2f
+import formats.cloze
+
+class TestFormatsCloze(unittest.TestCase):
 
     def test_extract_cloze_data_simple(self):
         """Cloze deletion data should be able to be extracted"""
@@ -13,7 +15,7 @@ class TestFormatsAbbreviation(unittest.TestCase):
 
         root = ET.fromstring(fragments[0])
 
-        data = f2f.extract_cloze(root)
+        data = formats.cloze.extract(root)
 
         self.assertEquals(data, {"Text": "{{c1::This}}", "Extra": ""})
 
@@ -23,7 +25,7 @@ class TestFormatsAbbreviation(unittest.TestCase):
 
         root = ET.fromstring(fragments[0])
 
-        data = f2f.extract_cloze(root)
+        data = formats.cloze.extract(root)
 
         self.assertEquals(data, {"Text": "{{c1::That}}", "Extra": ""})
 
@@ -36,7 +38,7 @@ class TestFormatsAbbreviation(unittest.TestCase):
 
         root = ET.fromstring(fragments[0])
 
-        data = f2f.extract_cloze(root)
+        data = formats.cloze.extract(root)
 
         self.assertEquals(data, {"Text": "This {{c1::is}} a {{c2::cloze}} test", "Extra": ""})
 
@@ -49,7 +51,7 @@ class TestFormatsAbbreviation(unittest.TestCase):
 
         root = ET.fromstring(fragments[0])
 
-        f2f.extract_cloze(root)
+        formats.cloze.extract(root)
 
         self.assertEquals(root[0].attrib['data-id'], "1")
         self.assertEquals(root[1].attrib['data-id'], "2")
@@ -63,7 +65,7 @@ class TestFormatsAbbreviation(unittest.TestCase):
 
         root = ET.fromstring(fragments[0])
 
-        data = f2f.extract_cloze(root)
+        data = formats.cloze.extract(root)
 
         self.assertEquals(data, {"Text": "This {{c2::is}} a {{c1::cloze}} test", "Extra": ""})
 
@@ -76,6 +78,6 @@ class TestFormatsAbbreviation(unittest.TestCase):
 
         root = ET.fromstring(fragments[0])
 
-        data = f2f.extract_cloze(root)
+        data = formats.cloze.extract(root)
 
         self.assertEquals(data, {"Text": "A {{c1::B}} {{c3::C}} {{c2::D}} E {{c4::F}}", "Extra": ""})

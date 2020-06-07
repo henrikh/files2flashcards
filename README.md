@@ -85,7 +85,7 @@ This is used for updating notes. If the content of the above element is edited, 
 Cloze deletions
 ---------------
 
-Cloze deletions are supported using the `extract_cloze` function. In notes, a cloze is specified as the following:
+Cloze deletions are supported using the `cloze` format. In notes, a cloze is specified as the following:
 
 ```HTML
 <abbr class="h-fcard e-cloze"><em>This</em> is a <em>cloze</em></abbr>
