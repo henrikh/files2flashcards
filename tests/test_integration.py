@@ -1,7 +1,9 @@
 import unittest
-import files2flashcards as f2f
 import tempfile
 import shutil
+
+import files2flashcards as f2f
+import formats.cloze
 
 class TestIntegration(unittest.TestCase):
 
@@ -15,11 +17,7 @@ class TestIntegration(unittest.TestCase):
             note_type="Basic",
             mapping_function=f2f.extract_abbreviation_basic)
 
-        f2f.add_format(
-            tag="span",
-            class_name="e-cloze",
-            note_type="Cloze",
-            mapping_function=f2f.extract_cloze)
+        f2f.add_format(**formats.cloze.definition)
 
         tmp_dir_o = tempfile.TemporaryDirectory()
         tmp_dir = tmp_dir_o.name
