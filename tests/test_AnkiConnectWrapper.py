@@ -1,5 +1,5 @@
 import unittest
-import AnkiConnectWrapper as acw
+from files2flashcards import AnkiConnectWrapper as acw
 from unittest.mock import MagicMock, Mock, call
 
 class TestAnkiConnectWrapper(unittest.TestCase):
@@ -13,7 +13,7 @@ class TestAnkiConnectWrapper(unittest.TestCase):
 
         id = acw.add_note("Basic", {"Front": "front content", "Back": "back content"})
 
-        self.assertEquals(id, "12345")
+        self.assertEqual(id, "12345")
 
         acw.invoke.assert_called_with("addNote",
             {"note":

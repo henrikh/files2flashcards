@@ -2,10 +2,11 @@ import unittest
 import xml.etree.ElementTree as ET
 import tempfile
 import shutil
+import os
 from unittest.mock import MagicMock, Mock, call
 
 import files2flashcards as f2f
-import formats.abbreviation
+from files2flashcards.formats import abbreviation
 
 class TestExtractFlashcardData(unittest.TestCase):
 
@@ -15,13 +16,13 @@ class TestExtractFlashcardData(unittest.TestCase):
         tag = "abbr"
         fragments = f2f.find_fragments(raw_string, tag)
 
-        self.assertEquals(fragments, ["""<abbr title="Bit error rate" data-context="Communication" class="h-fcard">BER</abbr>"""])
+        self.assertEqual(fragments, ["""<abbr title="Bit error rate" data-context="Communication" class="h-fcard">BER</abbr>"""])
 
         raw_string = """It is <abbr title="Bit error rate" data-context="Communication" class="h-fcard">BER</abbr>"""
         tag = "abbr"
         fragments = f2f.find_fragments(raw_string, tag)
 
-        self.assertEquals(fragments, ["""<abbr title="Bit error rate" data-context="Communication" class="h-fcard">BER</abbr>"""])
+        self.assertEqual(fragments, ["""<abbr title="Bit error rate" data-context="Communication" class="h-fcard">BER</abbr>"""])
 
     def test_fragments_multiple(self):
         """Ensure that multiple fragments can be extracted from a single file"""
@@ -30,7 +31,7 @@ class TestExtractFlashcardData(unittest.TestCase):
         tag = "abbr"
         fragments = f2f.find_fragments(raw_string, tag)
 
-        self.assertEquals(fragments, ["""<abbr title="Bit error rate" data-context="Communication" class="h-fcard">BER</abbr>""", """<abbr title="Symbol error rate" data-context="Communication" class="h-fcard">SER</abbr>"""])
+        self.assertEqual(fragments, ["""<abbr title="Bit error rate" data-context="Communication" class="h-fcard">BER</abbr>""", """<abbr title="Symbol error rate" data-context="Communication" class="h-fcard">SER</abbr>"""])
 
     def test_fragments_spanning_lines(self):
         """Ensure that fragments can span multiple lines"""
@@ -44,7 +45,7 @@ class TestExtractFlashcardData(unittest.TestCase):
         tag = "dl"
         fragments = f2f.find_fragments(raw_string, tag)
 
-        self.assertEquals(fragments, ["""<dl class="h-fcard e-programming-syntax"
+        self.assertEqual(fragments, ["""<dl class="h-fcard e-programming-syntax"
     data-language="Ada">
     <dt>Addition</dt>
     <dd><pre>2 + 2</pre></dd>
@@ -65,7 +66,7 @@ class TestExtractFlashcardData(unittest.TestCase):
 
         root = ET.fromstring(fragment)
 
-        self.assertEquals(root.attrib["data-anki-id"], "1234")
+        self.assertEqual(root.attrib["data-anki-id"], "1234")
 
         fragments = f2f.find_fragments(fragment, tag)
 
@@ -73,7 +74,7 @@ class TestExtractFlashcardData(unittest.TestCase):
 
         data = f2f.extract_abbreviation_basic(root)
 
-        self.assertEquals(data, {"Back": "Bit error rate", "Front": "BER"})
+        self.assertEqual(data, {"Back": "Bit error rate", "Front": "BER"})
 
 class TestProcessFile(unittest.TestCase):
 
@@ -89,7 +90,7 @@ class TestProcessFile(unittest.TestCase):
         f2f.AnkiConnectWrapper.add_note.return_value = "1234"
         f2f.AnkiConnectWrapper.update_note = MagicMock()
 
-        f2f.add_format(**formats.abbreviation.definition)
+        f2f.add_format(**abbreviation.definition)
 
         tmp_dir_o = tempfile.TemporaryDirectory()
         tmp_dir = tmp_dir_o.name
@@ -104,9 +105,9 @@ class TestProcessFile(unittest.TestCase):
 
             root = ET.fromstring(fragments[0])
 
-            data = formats.abbreviation.extract(root)
+            data = abbreviation.extract(root)
 
-            self.assertEquals(data, {"Full": "Bit error rate", "Context": "Communication", "Abbreviation": "BER"})
+            self.assertEqual(data, {"Full": "Bit error rate", "Context": "Communication", "Abbreviation": "BER"})
 
             print(content)
 
@@ -123,7 +124,7 @@ class TestProcessFile(unittest.TestCase):
 
         def edit_ElementTree(root):
             root.attrib["data-dummy"] = "test"
-            return formats.abbreviation.extract(root)
+            return abbreviation.extract(root)
 
         f2f.add_format(
             tag="abbr",
@@ -151,7 +152,7 @@ class TestProcessFile(unittest.TestCase):
 
         def edit_ElementTree(root):
             root.attrib["data-dummy"] = "test"
-            return formats.abbreviation.extract(root)
+            return abbreviation.extract(root)
 
         f2f.add_format(
             tag="abbr",
@@ -175,7 +176,7 @@ class TestProcessFile(unittest.TestCase):
 
         f2f.taboo_word = "Taboo!"
 
-        f2f.add_format(**formats.abbreviation.definition)
+        f2f.add_format(**abbreviation.definition)
 
         tmp_dir_o = tempfile.TemporaryDirectory()
         tmp_dir = tmp_dir_o.name
@@ -189,14 +190,14 @@ class TestProcessFile(unittest.TestCase):
         f2f.process_file(tmp_dir + "/" + "test.tid")
 
         with open(tmp_dir + "/" + "test.tid", encoding='utf-8') as f:
-            self.assertEquals(content_before, f.read())
+            self.assertEqual(content_before, f.read())
 
     def test_process_file_no_flashcards(self):
         """There can be things which looks like flashcards, but aren't
         
         Here we check that when the h-fcard class is not present, then flashcards shouldn't be processed"""
 
-        f2f.add_format(**formats.abbreviation.definition)
+        f2f.add_format(**abbreviation.definition)
 
         tmp_dir_o = tempfile.TemporaryDirectory()
         tmp_dir = tmp_dir_o.name
@@ -217,7 +218,7 @@ class TestProcessFile(unittest.TestCase):
     def test_process_file_call_Anki(self):
         """New notes should be requested to be added"""
 
-        f2f.add_format(**formats.abbreviation.definition)
+        f2f.add_format(**abbreviation.definition)
 
         tmp_dir_o = tempfile.TemporaryDirectory()
         tmp_dir = tmp_dir_o.name
@@ -238,7 +239,7 @@ class TestProcessFile(unittest.TestCase):
     def test_process_file_call_Anki_existing_note(self):
         """Existing notes should be requested to be updated"""
 
-        f2f.add_format(**formats.abbreviation.definition)
+        f2f.add_format(**abbreviation.definition)
 
         tmp_dir_o = tempfile.TemporaryDirectory()
         tmp_dir = tmp_dir_o.name
@@ -253,7 +254,7 @@ class TestProcessFile(unittest.TestCase):
     def test_process_folder(self):
         """Process a whole folder of notes"""
 
-        f2f.add_format(**formats.abbreviation.definition)
+        f2f.add_format(**abbreviation.definition)
 
         tmp_dir_o = tempfile.TemporaryDirectory()
         tmp_dir = tmp_dir_o.name
@@ -265,12 +266,12 @@ class TestProcessFile(unittest.TestCase):
 
         f2f.process_folder(tmp_dir)
 
-        self.assertEquals(f2f.process_file.call_count, 2)
+        self.assertEqual(f2f.process_file.call_count, 2)
 
     def test_process_folder_regex(self):
         """Use a regex to limit which files are processed"""
 
-        f2f.add_format(**formats.abbreviation.definition)
+        f2f.add_format(**abbreviation.definition)
 
         tmp_dir_o = tempfile.TemporaryDirectory()
         tmp_dir = tmp_dir_o.name
@@ -282,12 +283,12 @@ class TestProcessFile(unittest.TestCase):
 
         f2f.process_folder(tmp_dir, regex=r'\.tid$')
 
-        self.assertEquals(f2f.process_file.call_count, 1)
+        self.assertEqual(f2f.process_file.call_count, 1)
 
     def test_process_folder_changed(self):
         """Only process files if they have changed"""
 
-        f2f.add_format(**formats.abbreviation.definition)
+        f2f.add_format(**abbreviation.definition)
 
         tmp_dir_o = tempfile.TemporaryDirectory()
         tmp_dir = tmp_dir_o.name
@@ -314,7 +315,7 @@ class TestProcessFile(unittest.TestCase):
     def test_process_folder_changed_custom_folder(self):
         """Select a different folder for the data file"""
 
-        f2f.add_format(**formats.abbreviation.definition)
+        f2f.add_format(**abbreviation.definition)
 
         tmp_dir_o = tempfile.TemporaryDirectory()
         tmp_dir = tmp_dir_o.name

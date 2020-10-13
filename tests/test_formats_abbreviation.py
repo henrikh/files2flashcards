@@ -2,7 +2,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 import files2flashcards as f2f
-import formats.abbreviation
+from files2flashcards.formats import abbreviation
 
 class TestFormatsAbbreviation(unittest.TestCase):
 
@@ -15,9 +15,9 @@ class TestFormatsAbbreviation(unittest.TestCase):
 
         root = ET.fromstring(fragments[0])
 
-        data = formats.abbreviation.extract(root)
+        data = abbreviation.extract(root)
 
-        self.assertEquals(data, {"Full": "Bit error rate", "Context": "Communication", "Abbreviation": "BER"})
+        self.assertEqual(data, {"Full": "Bit error rate", "Context": "Communication", "Abbreviation": "BER"})
 
         raw_string = """<abbr title="Symbol error rate" data-context="Communication" class="h-fcard">SER</abbr>"""
         tag = "abbr"
@@ -25,6 +25,6 @@ class TestFormatsAbbreviation(unittest.TestCase):
 
         root = ET.fromstring(fragments[0])
 
-        data = formats.abbreviation.extract(root)
+        data = abbreviation.extract(root)
 
-        self.assertEquals(data, {"Full": "Symbol error rate", "Context": "Communication", "Abbreviation": "SER"})
+        self.assertEqual(data, {"Full": "Symbol error rate", "Context": "Communication", "Abbreviation": "SER"})

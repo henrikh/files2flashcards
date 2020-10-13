@@ -1,6 +1,6 @@
 import re
 import xml.etree.ElementTree as ET
-import AnkiConnectWrapper
+from files2flashcards import AnkiConnectWrapper
 import os
 import time
 import json

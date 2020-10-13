@@ -2,7 +2,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 import files2flashcards as f2f
-import formats.syntax
+from files2flashcards.formats import syntax
 
 class TestFormatsSyntax(unittest.TestCase):
 
@@ -20,9 +20,9 @@ class TestFormatsSyntax(unittest.TestCase):
 
         root = ET.fromstring(fragments[0])
 
-        data = formats.syntax.extract(root)
+        data = syntax.extract(root)
 
-        self.assertEquals(data, {"Meaning": "Addition", "Syntax": "2 + 2", "Language": "Ada"})
+        self.assertEqual(data, {"Meaning": "Addition", "Syntax": "2 + 2", "Language": "Ada"})
 
     def test_extract_syntax_styled(self):
         """Programming syntax should be extracted"""
@@ -38,6 +38,6 @@ class TestFormatsSyntax(unittest.TestCase):
 
         root = ET.fromstring(fragments[0])
 
-        data = formats.syntax.extract(root)
+        data = syntax.extract(root)
 
-        self.assertEquals(data, {"Meaning": "Addition", "Syntax": "2 <b>+</b> 2", "Language": "Ada"})
+        self.assertEqual(data, {"Meaning": "Addition", "Syntax": "2 <b>+</b> 2", "Language": "Ada"})

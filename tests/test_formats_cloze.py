@@ -2,7 +2,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 import files2flashcards as f2f
-import formats.cloze
+from files2flashcards.formats import cloze
 
 class TestFormatsCloze(unittest.TestCase):
 
@@ -15,9 +15,9 @@ class TestFormatsCloze(unittest.TestCase):
 
         root = ET.fromstring(fragments[0])
 
-        data = formats.cloze.extract(root)
+        data = cloze.extract(root)
 
-        self.assertEquals(data, {"Text": "{{c1::This}}", "Extra": ""})
+        self.assertEqual(data, {"Text": "{{c1::This}}", "Extra": ""})
 
         raw_string = """<span class="h-fcard e-cloze"><em>That</em></span>"""
         tag = "span"
@@ -25,9 +25,9 @@ class TestFormatsCloze(unittest.TestCase):
 
         root = ET.fromstring(fragments[0])
 
-        data = formats.cloze.extract(root)
+        data = cloze.extract(root)
 
-        self.assertEquals(data, {"Text": "{{c1::That}}", "Extra": ""})
+        self.assertEqual(data, {"Text": "{{c1::That}}", "Extra": ""})
 
     def test_extract_cloze_data_advanced(self):
         """Cloze deletion data should be able to be extracted"""
@@ -38,9 +38,9 @@ class TestFormatsCloze(unittest.TestCase):
 
         root = ET.fromstring(fragments[0])
 
-        data = formats.cloze.extract(root)
+        data = cloze.extract(root)
 
-        self.assertEquals(data, {"Text": "This {{c1::is}} a {{c2::cloze}} test", "Extra": ""})
+        self.assertEqual(data, {"Text": "This {{c1::is}} a {{c2::cloze}} test", "Extra": ""})
 
     def test_extract_cloze_insert_id(self):
         """Cloze deletions have IDs to ensure stability"""
@@ -51,10 +51,10 @@ class TestFormatsCloze(unittest.TestCase):
 
         root = ET.fromstring(fragments[0])
 
-        formats.cloze.extract(root)
+        cloze.extract(root)
 
-        self.assertEquals(root[0].attrib['data-id'], "1")
-        self.assertEquals(root[1].attrib['data-id'], "2")
+        self.assertEqual(root[0].attrib['data-id'], "1")
+        self.assertEqual(root[1].attrib['data-id'], "2")
 
     def test_extract_cloze_reuse_id(self):
         """Cloze deletions should reuse the IDs from the fragment"""
@@ -65,9 +65,9 @@ class TestFormatsCloze(unittest.TestCase):
 
         root = ET.fromstring(fragments[0])
 
-        data = formats.cloze.extract(root)
+        data = cloze.extract(root)
 
-        self.assertEquals(data, {"Text": "This {{c2::is}} a {{c1::cloze}} test", "Extra": ""})
+        self.assertEqual(data, {"Text": "This {{c2::is}} a {{c1::cloze}} test", "Extra": ""})
 
     def test_extract_cloze_new_cloze(self):
         """Cloze deletions should handle new deletions in known fragments"""
@@ -78,6 +78,6 @@ class TestFormatsCloze(unittest.TestCase):
 
         root = ET.fromstring(fragments[0])
 
-        data = formats.cloze.extract(root)
+        data = cloze.extract(root)
 
-        self.assertEquals(data, {"Text": "A {{c1::B}} {{c3::C}} {{c2::D}} E {{c4::F}}", "Extra": ""})
+        self.assertEqual(data, {"Text": "A {{c1::B}} {{c3::C}} {{c2::D}} E {{c4::F}}", "Extra": ""})
