@@ -2,8 +2,8 @@ import unittest
 import xml.etree.ElementTree as ET
 import tempfile
 import shutil
-import os
 from unittest.mock import MagicMock, Mock, call
+import time
 
 import files2flashcards as f2f
 from files2flashcards.formats import abbreviation
@@ -305,6 +305,10 @@ class TestProcessFile(unittest.TestCase):
 
         f2f.AnkiConnectWrapper.add_note.reset_mock()
 
+        # To ensure that the time stamps are sufficiently different, we wait a
+        # little before making a copy of the file
+        time.sleep(0.5)
+
         shutil.copyfile("tests/test.tid", tmp_dir + "/" + "test2.tid")
 
         f2f.process_folder(tmp_dir, only_changed=True)
@@ -332,6 +336,10 @@ class TestProcessFile(unittest.TestCase):
         f2f.process_folder(tmp_dir, only_changed=True, data_file_dir=tmp_data_dir)
 
         f2f.AnkiConnectWrapper.add_note.reset_mock()
+
+        # To ensure that the time stamps are sufficiently different, we wait a
+        # little before making a copy of the file
+        time.sleep(0.1)
 
         shutil.copyfile("tests/test.tid", tmp_dir + "/" + "test2.tid")
 
