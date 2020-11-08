@@ -4,6 +4,7 @@ from files2flashcards import AnkiConnectWrapper
 import os
 import time
 import json
+import logging
 
 taboo_word = None
 
@@ -46,8 +47,6 @@ def process_file(path):
         if taboo_word is not None and taboo_word in content:
             return
 
-        print(path)
-
         for mapping in mapping_registry:
             fragments = find_fragments(content, mapping["tag"])
             for fragment in fragments:
@@ -66,7 +65,7 @@ def process_file(path):
 
                     content = content.replace(fragment, new_fragment)
 
-                    # TODO: What happens if a request fails?
+                    logging.warning("TODO: What happens if a request fails?")
                     f.seek(0)
                     f.write(content)
 
@@ -91,21 +90,17 @@ def process_folder(path, regex=r'', only_changed=False, data_file_dir=None):
 
     for file in os.listdir(path):
         file_path = path + "/" + file
-        print(file)
 
         if file == DATA_FILE:
-            print("Was data file")
             continue
 
         if only_changed:
             last_modified = os.path.getmtime(file_path)
 
             if last_modified < last_run:
-                print("Modified before last run")
                 continue
 
             if file_path in previous_processed_files and previous_processed_files[file_path] == last_modified:
-                print("Part of the previous set of files")
                 continue
 
         if re.search(regex, file) is not None:

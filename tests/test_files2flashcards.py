@@ -4,6 +4,7 @@ import tempfile
 import shutil
 from unittest.mock import MagicMock, Mock, call
 import time
+import logging
 
 import files2flashcards as f2f
 from files2flashcards.formats import abbreviation
@@ -108,8 +109,6 @@ class TestProcessFile(unittest.TestCase):
             data = abbreviation.extract(root)
 
             self.assertEqual(data, {"Full": "Bit error rate", "Context": "Communication", "Abbreviation": "BER"})
-
-            print(content)
 
     def test_process_file_return_ElementTree_modified(self):
         """Modify the ElementTree in the mapping function"""
@@ -262,7 +261,8 @@ class TestProcessFile(unittest.TestCase):
         shutil.copyfile("tests/test.tid", tmp_dir + "/" + "test1.tid")
         shutil.copyfile("tests/test.tid", tmp_dir + "/" + "test2.tid")
 
-        f2f.process_file = MagicMock()
+        logging.warning("TODO: Don't mock in the global context")
+        f2f.process_file = Mock()
 
         f2f.process_folder(tmp_dir)
 
@@ -279,7 +279,8 @@ class TestProcessFile(unittest.TestCase):
         shutil.copyfile("tests/test.tid", tmp_dir + "/" + "test1.tid")
         shutil.copyfile("tests/test.tid", tmp_dir + "/" + "test2.md")
 
-        f2f.process_file = MagicMock()
+        logging.warning("TODO: Don't mock in the global context")
+        f2f.process_file = Mock()
 
         f2f.process_folder(tmp_dir, regex=r'\.tid$')
 
@@ -307,7 +308,7 @@ class TestProcessFile(unittest.TestCase):
 
         # To ensure that the time stamps are sufficiently different, we wait a
         # little before making a copy of the file
-        time.sleep(0.5)
+        time.sleep(1)
 
         shutil.copyfile("tests/test.tid", tmp_dir + "/" + "test2.tid")
 
@@ -327,7 +328,7 @@ class TestProcessFile(unittest.TestCase):
         tmp_data_dir_o = tempfile.TemporaryDirectory()
         tmp_data_dir = tmp_data_dir_o.name
 
-        shutil.copyfile("tests/test.tid", tmp_dir + "/" + "test1.tid")
+        shutil.copyfile("tests/test.tid", tmp_dir + "/" + "old.tid")
 
         f2f.AnkiConnectWrapper.add_note = Mock()
         f2f.AnkiConnectWrapper.add_note.return_value = "12345"
@@ -341,7 +342,7 @@ class TestProcessFile(unittest.TestCase):
         # little before making a copy of the file
         time.sleep(0.1)
 
-        shutil.copyfile("tests/test.tid", tmp_dir + "/" + "test2.tid")
+        shutil.copyfile("tests/test.tid", tmp_dir + "/" + "new.tid")
 
         f2f.process_folder(tmp_dir, only_changed=True, data_file_dir=tmp_data_dir)
 

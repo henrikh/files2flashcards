@@ -28,8 +28,6 @@ class TestIntegration(unittest.TestCase):
         with open(tmp_dir + "/" + "test.tid", "r+", encoding='utf-8') as f:
             content = f.read()
 
-            print(content)
-
             content = content.replace("BER", "SER")
             content = content.replace("Bit", "Symbol")
             content = content.replace("replace-me", "<em>replace-me</em>")
@@ -38,7 +36,6 @@ class TestIntegration(unittest.TestCase):
             f.write(content)
             f.seek(0)
             content = f.read()
-            print(content)
 
         f2f.process_file(tmp_dir + "/" + "test.tid")
 
