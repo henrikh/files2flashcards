@@ -30,7 +30,7 @@ def add_note(note_type, fields):
 
 def update_note(note_id, fields):
     params = {"note":{
-        "id": note_id,
+        "id": int(float(note_id)),
         "fields": fields
         }}
 
