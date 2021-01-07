@@ -65,7 +65,6 @@ def process_file(path):
 
                     content = content.replace(fragment, new_fragment)
 
-                    logging.warning("TODO: What happens if a request fails?")
                     f.seek(0)
                     f.write(content)
 
