@@ -41,6 +41,7 @@ def add_format(tag, class_name, note_type, mapping_function):
     })
 
 def process_file(path):
+    logging.info(f"Processing: {path}")
     with open(path, 'r+', encoding='utf-8') as f:
         content = f.read()
 
